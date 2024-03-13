@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "597226831807",
+    "project_id": "projectzed-115d7",
+    "storage_bucket": "projectzed-115d7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597226831807:android:c1d72b2f78db14332dab0a",
+        "android_client_info": {
+          "package_name": "com.project.zed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597226831807-t2foq05besgp4d5iqf74t9sr4otcua1k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.zed",
+            "certificate_hash": "f427f8dfa18a38feec2dd0c66dced8cbde44a015"
+          }
+        },
+        {
+          "client_id": "597226831807-1diirvdjb10pm1h0fk7fqdeogrcj5kon.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3iR1-oOXE4js_E4SLMn9dz_eXM9bJJLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597226831807-1diirvdjb10pm1h0fk7fqdeogrcj5kon.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
