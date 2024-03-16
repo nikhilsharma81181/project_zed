@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:project_zed/constant/endpoints.dart';
-import 'package:project_zed/server_config/api_response_model.dart';
+import 'package:project_zed/shared/constant/endpoints.dart';
+import 'package:project_zed/shared/server_config/api_response_model.dart';
 import 'package:tuple/tuple.dart';
 
 class AuthRepository {

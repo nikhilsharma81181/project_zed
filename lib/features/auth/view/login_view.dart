@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:project_zed/auth/provider/auth_provider.dart';
-import 'package:project_zed/server_config/api_response_model.dart';
+import 'package:project_zed/features/auth/provider/auth_provider.dart';
+import 'package:project_zed/shared/server_config/api_response_model.dart';
 
 class LoginView extends StatefulHookConsumerWidget {
   const LoginView({super.key});

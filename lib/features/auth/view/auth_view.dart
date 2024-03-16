@@ -1,9 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:project_zed/auth/provider/auth_provider.dart';
-import 'package:project_zed/auth/view/login_view.dart';
-import 'package:project_zed/auth/view/otp_view.dart';
+import 'package:project_zed/features/auth/provider/auth_provider.dart';
+import 'package:project_zed/features/auth/view/login_view.dart';
+import 'package:project_zed/features/auth/view/otp_view.dart';
 
 class AuthView extends StatefulHookConsumerWidget {
   const AuthView({super.key});

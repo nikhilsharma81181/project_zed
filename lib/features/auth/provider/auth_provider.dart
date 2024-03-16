@@ -5,10 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:project_zed/auth/model/auth_model.dart';
-import 'package:project_zed/auth/repository/auth_repository.dart';
-import 'package:project_zed/server_config/api_response_model.dart';
-import 'package:project_zed/server_config/dio_provider.dart';
+import 'package:project_zed/features/auth/model/auth_model.dart';
+import 'package:project_zed/features/auth/repository/auth_repository.dart';
+import 'package:project_zed/shared/server_config/api_response_model.dart';
+import 'package:project_zed/shared/server_config/dio_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthModel>((ref) {

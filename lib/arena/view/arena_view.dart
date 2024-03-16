@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:project_zed/auth/provider/auth_provider.dart';
+import 'package:project_zed/features/auth/provider/auth_provider.dart';
 
 class ArenaView extends StatefulHookConsumerWidget {
   const ArenaView({super.key});

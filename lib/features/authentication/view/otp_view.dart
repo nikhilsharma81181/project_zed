@@ -8,8 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:project_zed/arena/view/arena_view.dart';
-import 'package:project_zed/auth/provider/auth_provider.dart';
-import 'package:project_zed/server_config/api_response_model.dart';
+import 'package:project_zed/features/authentication/provider/auth_provider.dart';
+import 'package:project_zed/shared/server_config/api_response_model.dart';
 
 class OTPView extends StatefulHookConsumerWidget {
   const OTPView({super.key});

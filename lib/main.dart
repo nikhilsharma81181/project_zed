@@ -4,10 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:project_zed/auth/provider/auth_provider.dart';
+import 'package:project_zed/features/auth/provider/auth_provider.dart';
 import 'package:project_zed/firebase_options.dart';
 import 'package:project_zed/homepage.dart';
-import 'package:project_zed/auth/view/auth_view.dart';
+import 'package:project_zed/features/auth/view/auth_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
