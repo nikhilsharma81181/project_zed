@@ -1,70 +1,58 @@
-import 'dart:developer';
-
-import 'package:dio/dio.dart';
-import 'package:project_zed/shared/constant/endpoints.dart';
-import 'package:project_zed/shared/error/exceptions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project_zed/core/error/exceptions.dart';
 
 abstract class PhoneAuthDataSource {
-  Future<bool> sendOtp({
+  Future<String> sendOtp({
     required String phoneNumber,
   });
 
   Future<String> verifyOtp({
-    required String phoneNumber,
+    required String verificationId,
     required String otpNumber,
   });
 }
 
 class PhoneAuthDataSourceImpl implements PhoneAuthDataSource {
-  final Dio dio;
-  PhoneAuthDataSourceImpl(this.dio);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
-  Future<bool> sendOtp({required String phoneNumber}) async {
+  Future<String> sendOtp({required String phoneNumber}) async {
     try {
-      final res =
-          await dio.post("${dio.options.baseUrl}${Endpoint.sendOtp}", data: {
-        "phone": "+91$phoneNumber",
-      });
-      if (res.statusCode == 200) {
-        return true;
-      }
-      throw ServerException("ServerError: ${res.statusCode}");
-    } on DioException catch (e) {
-      log(e.toString());
-      if (e.response != null && e.response!.statusCode == 400) {
-        throw ServerException("Invalid Phone Number");
-      } else {
-        throw ServerException('Server Error: ${e.toString()}');
-      }
+      String verificationId = "";
+      await _auth.verifyPhoneNumber(
+        phoneNumber: "+91$phoneNumber",
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (credential) async {
+          // Auto-verification completed (handle if needed)
+        },
+        verificationFailed: (error) {
+          throw ServerException(error.message.toString());
+        },
+        codeSent: (verificationID, [forceResendingToken]) async {
+          verificationId = verificationID;
+        },
+        codeAutoRetrievalTimeout: (verificationId) {
+          throw ServerException(verificationId.toString());
+        },
+      );
+      return verificationId;
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(e.message.toString());
     }
   }
 
   @override
   Future<String> verifyOtp(
-      {required String phoneNumber, required String otpNumber}) async {
+      {required String verificationId, required String otpNumber}) async {
     try {
-      final res =
-          await dio.post("${dio.options.baseUrl}${Endpoint.verifyOtp}", data: {
-        "phone": "+91$phoneNumber",
-        "otp": otpNumber,
-      });
-      if (res.statusCode == 200) {
-        return res.data['token'];
-      }
-      throw ServerException("Invalid OTP or Server Error: ${res.statusCode}");
-    } on DioException catch (e) {
-      log(e.toString());
-      if (e.response != null) {
-        final statusCode = e.response!.statusCode;
-        if (statusCode == 400) {
-          throw ServerException("Invalid OTP");
-        } else {
-          throw ServerException('Server Error: ${e.toString()}');
-        }
-      } else {
-        throw ServerException('Network Error: ${e.toString()}');
-      }
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otpNumber,
+      );
+      final userCredential = await _auth.signInWithCredential(credential);
+      return userCredential.user?.uid ?? "";
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(e.message.toString());
     }
   }
 }

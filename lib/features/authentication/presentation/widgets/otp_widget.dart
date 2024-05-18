@@ -7,10 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:project_zed/arena/view/arena_view.dart';
+import 'package:project_zed/features/arena/view/arena_view.dart';
 import 'package:project_zed/features/authentication/presentation/providers/login_animation_provider.dart';
 import 'package:project_zed/features/authentication/presentation/providers/phone_auth_provider.dart';
-import 'package:project_zed/shared/server_config/api_response_model.dart';
+import 'package:project_zed/core/server_config/api_response_model.dart';
 
 class OTPView extends StatefulHookConsumerWidget {
   const OTPView({super.key});
@@ -145,7 +145,7 @@ class _OTPViewState extends ConsumerState<OTPView> {
                 },
                 (success) {
                   if (success) {
-                    log("otp: ${success}");
+                    log("otp: $success");
                     Navigator.pushReplacement(
                         // ignore: use_build_context_synchronously
                         context,

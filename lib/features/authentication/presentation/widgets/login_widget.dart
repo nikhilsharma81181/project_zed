@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:project_zed/features/authentication/presentation/providers/google_auth_provider.dart';
 import 'package:project_zed/features/authentication/presentation/providers/login_animation_provider.dart';
 import 'package:project_zed/features/authentication/presentation/providers/phone_auth_provider.dart';
 
@@ -34,7 +36,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
         });
       },
       (success) {
-        if (success) {
+        log("sending OTP....");
+        if (success != "") {
           authProv.updatePhoneNumber(phoneCtrl.text);
           ref.read(loginAnimationProvider.notifier).animateToOtpView();
         }
@@ -42,14 +45,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
     );
   }
 
-  // _handleGoogleSignIn() async {
-  //   bool success = await ref.read(authProvider.notifier).signInWithGoogle();
-  //   if (success) {
-  //     setState(() {
-  //       // nextPage = true;
-  //     });
-  //   }
-  // }
+  _handleGoogleSignIn() async {
+    final googleAuthNotifier = ref.read(googleAuthNotifierProvider.notifier);
+    final result = await googleAuthNotifier.signInWithGoogle();
+    result.fold(
+      (failure) {
+        log("something went wrong: $failure");
+      },
+      (success) {},
+    );
+  }
 
   @override
   void dispose() {
@@ -259,7 +264,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     width: width * 0.86,
                     child: ElevatedButton(
                       onPressed: () {
-                        // _handleGoogleSignIn();
+                        _handleGoogleSignIn();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,

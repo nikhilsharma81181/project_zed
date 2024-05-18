@@ -1,11 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:project_zed/arena/view/arena_view.dart';
-import 'package:project_zed/feed/view/feed_view.dart';
-import 'package:project_zed/leaderboard/view/leaderboard_view.dart';
-import 'package:project_zed/profile/view/view.dart';
+import 'package:project_zed/core/constant/colors_const.dart';
+import 'package:project_zed/features/arena/view/arena_view.dart';
+import 'package:project_zed/features/feed/presentation/pages/feed_page.dart';
+import 'package:project_zed/features/leaderboard/presentation/pages/leaderboard_page.dart';
+import 'package:project_zed/features/profile/presentation/pages/profile_page.dart';
 
 class Homepage extends StatefulHookConsumerWidget {
   const Homepage({super.key});
@@ -16,48 +16,61 @@ class Homepage extends StatefulHookConsumerWidget {
 
 class _HomepageState extends ConsumerState<Homepage> {
   int _currentPageIndex = 0;
+  List navIcons = [
+    FontAwesomeIcons.battleNet,
+    Icons.leaderboard_outlined,
+    FontAwesomeIcons.fileLines,
+    FontAwesomeIcons.user,
+  ];
 
   @override
   Widget build(BuildContext context) {
     List pages = [
       const ArenaView(),
-      const LeaderboardView(),
-      const FeedView(),
-      const ProfileView(),
+      const LeaderboardPage(),
+      const FeedPage(),
+      const ProfilePage(),
     ];
     return Scaffold(
       body: pages[_currentPageIndex],
       extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white.withOpacity(0.8),
-        onTap: (val) {
-          setState(() {
-            _currentPageIndex = val;
-            log(_currentPageIndex.toString());
-          });
-        },
-        selectedIconTheme: const IconThemeData(color: Colors.black),
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
-        fixedColor: Colors.black,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Arena',
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        height: 60,
+        margin: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(
+            navIcons.length,
+            (index) => _navItems(index: index),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.leaderboard_outlined),
-            label: 'LeaderBoard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.feed_outlined),
-            label: 'Feed',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
-          ),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navItems({required int index}) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _currentPageIndex = index;
+        });
+      },
+      child: Container(
+        width: 50, // For more touch detector area
+        alignment: Alignment.center,
+        child: FaIcon(
+          navIcons[index],
+          color: _currentPageIndex == index
+              ? Pallate.accentColor
+              : Pallate.iconColor.withOpacity(0.7),
+          size: index < 2 ? 25 : 22, // To make icon size even
+        ),
       ),
     );
   }

@@ -1,5 +1,5 @@
 
-import 'package:project_zed/shared/error/failure.dart';
+import 'package:project_zed/core/error/failure.dart';
 
 class AuthState {
   final AuthStateEnum state;

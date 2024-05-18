@@ -1,22 +1,21 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:project_zed/features/auth/model/auth_model.dart';
-import 'package:project_zed/features/auth/provider/auth_provider.dart';
 import 'package:project_zed/features/authentication/data/datasource/phone_auth_data_source.dart';
+import 'package:project_zed/features/authentication/data/model/auth_model.dart';
 import 'package:project_zed/features/authentication/data/repository/phone_auth_repository_impl.dart';
 import 'package:project_zed/features/authentication/domain/usecases/phone_login.dart';
 import 'package:project_zed/features/authentication/domain/usecases/phone_verify.dart';
-import 'package:project_zed/shared/error/failure.dart';
-import 'package:project_zed/shared/server_config/dio_provider.dart';
+import 'package:project_zed/core/error/failure.dart';
+import 'package:project_zed/core/server_config/dio_provider.dart';
 
 final _phoneAuthRepositoryProvider =
     Provider.autoDispose<PhoneAuthRepositoryImpl>(
   (ref) => PhoneAuthRepositoryImpl(
-    PhoneAuthDataSourceImpl(
-      ref.read(dioProvider),
-    ),
+    PhoneAuthDataSourceImpl(),
   ),
 );
 
@@ -44,10 +43,15 @@ class PhoneAuthNotifier extends StateNotifier<AuthModel> {
       : super(const AuthModel(
             authState: AuthState.unauthenticated(), isLoading: false));
 
-  Future<Either<Failure, bool>> sendOtp({required String phoneNumber}) async {
+  String _verificationId = "";
+
+  Future<Either<Failure, String>> sendOtp({required String phoneNumber}) async {
     state = state.copyWith(isLoading: true);
     final result = await _phoneLogin(phoneNumber);
     state = state.copyWith(isLoading: false);
+    if (result.isRight()) {
+      _verificationId = result.getOrElse((l) => "null");
+    }
     return result;
   }
 
@@ -59,16 +63,15 @@ class PhoneAuthNotifier extends StateNotifier<AuthModel> {
       return left(Failure('Phone number is required'));
     }
     final result = await _phoneVerify(
-      VerifyOtpParams(phoneNumber: phoneNumber, otpNumber: otp),
+      VerifyOtpParams(verificationId: _verificationId, otpNumber: otp),
     );
     state = state.copyWith(isLoading: false);
     return result.fold(
       (failure) {
         return left(failure);
       },
-      (success) {
-        log("Tokkkkkkkkeeeeen: $success");
-        _saveAuthToken(success);
+      (user) {
+        log("User: $user");
         return right(true);
       },
     );
@@ -78,38 +81,9 @@ class PhoneAuthNotifier extends StateNotifier<AuthModel> {
     state = state.copyWith(phoneNumber: phoneNumber);
   }
 
-  _saveAuthToken(String token) async {
-    SaveLoginDetails.setToken(token);
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
   }
 }
-
-
-// final authRepositoryProvider = Provider.autoDispose<PhoneAuthRepository>(
-//   (ref) =>
-//       PhoneAuthRepositoryImpl(PhoneAuthDataSourceImpl(ref.read(dioProvider))),
-// );
-
-// final authNotifierProvider =
-//     StateNotifierProvider<PhoneAuthNotifier, AuthModel>(
-//   (ref) => PhoneAuthNotifier(ref.read(authRepositoryProvider)),
-// );
-
-// class PhoneAuthNotifier extends StateNotifier<AuthModel> {
-//   final PhoneAuthRepository _phoneAuthRepository;
-
-//   PhoneAuthNotifier(this._phoneAuthRepository)
-//       : super(const AuthModel(
-//             authState: AuthState.unauthenticated(), isLoading: false));
-
-//   Future<Either<Failure, bool>> sendOtp({required String phoneNumber}) async {
-//     state = state.copyWith(isLoading: true);
-
-//     final result = await _phoneAuthRepository.sendOtp(phoneNumber: phoneNumber);
-//     state = state.copyWith(isLoading: false);
-//     return result;
-//   }
-
-//   updatePhoneNumber(String phoneNumber) {
-//     state = state.copyWith(phoneNumber: phoneNumber);
-//   }
-// }

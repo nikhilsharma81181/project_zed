@@ -1,17 +1,14 @@
-import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:project_zed/features/auth/provider/auth_provider.dart';
+import 'package:project_zed/features/authentication/presentation/pages/auth_page.dart';
+import 'package:project_zed/features/authentication/presentation/providers/google_auth_provider.dart';
 import 'package:project_zed/firebase_options.dart';
 import 'package:project_zed/homepage.dart';
-import 'package:project_zed/features/auth/view/auth_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SaveLoginDetails.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -37,28 +34,29 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthWrapper extends StatefulHookConsumerWidget {
+class AuthWrapper extends ConsumerWidget {
   const AuthWrapper({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AuthWrapperState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
 
-class _AuthWrapperState extends ConsumerState<AuthWrapper> {
-  @override
-  Widget build(BuildContext context) {
-    String? token = SaveLoginDetails.getToken();
-    log("Token: $token");
-    if (token != null && token.isNotEmpty) {
-      return _buildPageTransition(child: const Homepage());
-    } else {
-      return _buildPageTransition(child: const AuthView());
-    }
+    return authState.when(
+      data: (user) {
+        if (user != null) {
+          return _buildPageTransition(child: const Homepage());
+        } else {
+          return _buildPageTransition(child: const AuthView());
+        }
+      },
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stackTrace) => Text('Error: $error'),
+    );
   }
 
   Widget _buildPageTransition({required Widget child}) {
     return PageTransition(
-      type: PageTransitionType.fade, // You can change the transition type here
+      type: PageTransitionType.fade,
       child: child,
     ).child;
   }
