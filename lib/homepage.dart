@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:project_zed/core/constant/colors_const.dart';
-import 'package:project_zed/features/arena/view/arena_view.dart';
+import 'package:project_zed/features/arena/presentation/pages/arena_view.dart';
 import 'package:project_zed/features/feed/presentation/pages/feed_page.dart';
 import 'package:project_zed/features/leaderboard/presentation/pages/leaderboard_page.dart';
 import 'package:project_zed/features/profile/presentation/pages/profile_page.dart';
@@ -67,8 +67,8 @@ class _HomepageState extends ConsumerState<Homepage> {
         child: FaIcon(
           navIcons[index],
           color: _currentPageIndex == index
-              ? Pallate.accentColor
-              : Pallate.iconColor.withOpacity(0.7),
+              ? const Color.fromARGB(255, 255, 255, 255)
+              : Pallate.iconColor.withOpacity(0.5),
           size: index < 2 ? 25 : 22, // To make icon size even
         ),
       ),
