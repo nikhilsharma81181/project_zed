@@ -10,7 +10,6 @@ import 'package:project_zed/features/authentication/data/repository/phone_auth_r
 import 'package:project_zed/features/authentication/domain/usecases/phone_login.dart';
 import 'package:project_zed/features/authentication/domain/usecases/phone_verify.dart';
 import 'package:project_zed/core/error/failure.dart';
-import 'package:project_zed/core/server_config/dio_provider.dart';
 
 final _phoneAuthRepositoryProvider =
     Provider.autoDispose<PhoneAuthRepositoryImpl>(
